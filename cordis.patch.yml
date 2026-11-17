@@ -1,0 +1,4 @@
+- insert:
+    - id: lphehe-token-economizer
+      name: '@lphehe/dsh-token-economizer'
+      config: {}

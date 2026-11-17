@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Token 节省助手",
+    "description": "使用 /economizer status 查看当前项目的未使用工具，/economizer apply <工具名> 隐藏建议的工具，/economizer restore 恢复。默认不隐藏工具；分析时读取 DSH 现有会话历史。"
+  }
+}

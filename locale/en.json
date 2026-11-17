@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Token economizer",
+    "description": "Use /economizer status to review unused tools in the current project, /economizer apply <tool> to hide a suggested tool, and /economizer restore to restore it. Hiding is off by default; existing DSH session history is read for analysis."
+  }
+}
