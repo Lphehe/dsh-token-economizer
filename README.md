@@ -42,6 +42,14 @@ npm install --ignore-scripts
 npm test
 ```
 
+The real DSH/Cordis integration test requires the Desktop Electron runtime and skips under ordinary Node.js. In a DSH-launched shell, run it alongside the unit tests with:
+
+```sh
+ELECTRON_RUN_AS_NODE=1 "$DSH_NODE_EXECUTABLE" --test test/*.test.js
+```
+
+The integration test uses real Cordis and tool services with in-memory stubs for session history, working-directory, command registration, and agents. It does not exercise a real model request, configuration editor, or GUI.
+
 ## License
 
 MIT. The concepts behind the project are described by [TokenEconomizer](https://github.com/microsoft/TokenEconomizer); no claim of Microsoft sponsorship or endorsement is made.
