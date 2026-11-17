@@ -11,13 +11,13 @@ This project focuses on tool definitions. DeepSeek Harness already includes an a
 
 ## Installation
 
-Clone this repository and install its directory using **Plugins → Add plugin** in DeepSeek Harness. For example:
+Install `@lphehe/dsh-token-economizer` through **Plugins → Add plugin** in DeepSeek Harness. You can also clone this repository and select the cloned directory:
 
 ```sh
 git clone https://github.com/Lphehe/dsh-token-economizer.git
 ```
 
-Select the cloned directory in the plugin manager. If you update an already installed copy, restart DSH to load the updated JavaScript. This is a GitHub repository; it is not published to npm.
+If you update an already installed copy, restart DSH to load the updated JavaScript.
 
 ## 使用 / Usage
 
@@ -27,9 +27,9 @@ Select the cloned directory in the plugin manager. If you update an already inst
 - `/economizer apply list_subagent_models`：明确选择隐藏此工具；也可选择 `list_mcp_resource_templates`。只能应用当前状态中符合条件的候选。
 - `/economizer restore`：恢复当前目录的工具。
 
-插件最多检查原始工作目录与当前目录相同的最近 40 个历史会话，忽略当前会话和分叉继承的事件。某个候选至少在三个会话的请求中出现，且所有检查过的会话均未调用过，才会被建议；历史读取失败时不能应用。当前只分析上述两个工具，不会自动隐藏工具。只保存一个目录的策略：先在原目录恢复，才能给其他目录设置策略。切换工作目录或关闭插件会解除不适用的限制。
+插件最多检查原始工作目录与当前目录相同的最近 40 个历史会话，忽略当前会话和分叉继承的事件。某个候选至少在三个会话的请求中出现，且所有检查过的会话均未调用过，才会被建议；历史读取失败时不能应用。旧版会话中的 PTC 调用会计入使用次数；仅通过旧版 PTC SDK 暴露的工具不计入提供次数，因此可能少报建议。当前只分析上述两个工具，不会自动隐藏工具。只保存一个目录的策略：先在原目录恢复，才能给其他目录设置策略。切换工作目录或关闭插件会解除不适用的限制。
 
-Commands and status messages currently use Chinese. Tool pruning can affect future tasks that need a hidden tool. Use `restore` to bring the tool back. DSH's programmatic tool calling and prompt caching can change the actual savings; no token or cost reduction is guaranteed or measured by this plugin.
+Commands and status messages currently use Chinese. Tool pruning can affect future tasks that need a hidden tool. Use `restore` to bring the tool back. Programmatic tool calls in older session histories count as usage, but tools exposed only through the former SDK do not count toward the offered threshold. Prompt caching can change the actual savings; no token or cost reduction is guaranteed or measured by this plugin.
 
 ## Privacy
 
@@ -48,7 +48,7 @@ The real DSH/Cordis integration test requires the Desktop Electron runtime and s
 ELECTRON_RUN_AS_NODE=1 "$DSH_NODE_EXECUTABLE" --test test/*.test.js
 ```
 
-The integration test uses real Cordis and tool services with in-memory stubs for session history, working-directory, command registration, and agents. It does not exercise a real model request, configuration editor, or GUI.
+The integration tests exercise real Cordis, tool services, and AgentLoop request assembly with a mock model; they use in-memory stubs for some services. They do not exercise a real model account, the configuration editor, or the GUI.
 
 ## License
 

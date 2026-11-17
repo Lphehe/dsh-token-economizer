@@ -25,7 +25,7 @@ export function evidenceFromSession(session, workspace, candidates) {
         if (candidates.includes(tool.name)) offered.add(tool.name)
       }
     }
-    if (event.type === 'tool/call' && candidates.includes(event.data.name)) used.add(event.data.name)
+    if (['tool/call', 'tool/ptc-dispatch-start', 'tool/ptc-dispatch'].includes(event.type) && candidates.includes(event.data.name)) used.add(event.data.name)
   }
   return { offered: [...offered], used: [...used] }
 }
@@ -82,7 +82,16 @@ export function apply(ctx, config) {
     if (agent) trySync(agent, event.data.cwd)
   })
   ctx.on('agent/disposed', ({ agent }) => { stop(agent) })
-  ctx.effect(() => () => { for (const agent of restrictions.keys()) stop(agent) })
+  let pending = false, active = true
+  ctx.on('tools/change', () => {
+    if (pending || !active) return
+    pending = true
+    queueMicrotask(() => {
+      pending = false
+      if (active) for (const agent of ctx.agents.list()) trySync(agent)
+    })
+  })
+  ctx.effect(() => () => { active = false; for (const agent of restrictions.keys()) stop(agent) })
   for (const agent of ctx.agents.list()) trySync(agent)
   ctx.commands.register({
     name: 'economizer',

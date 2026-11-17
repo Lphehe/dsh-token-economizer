@@ -22,11 +22,12 @@ test('installed Cordis and DSH tools release scoped masks on directory change an
   while (prompt.inertia) await prompt.inertia
   while (tools.inertia) await tools.inertia
   assert.ok(ctx.get('tools'), 'real tools service loaded')
-  ctx.tools.register({
+  const definition = {
     name: 'list_subagent_models', description: 'test tool', parameters: { type: 'object', properties: {} },
     output: { schema: { type: 'string' }, render: () => [{ type: 'text', text: '' }] },
     execute: async () => '',
-  })
+  }
+  const removeTool = ctx.tools.register(definition)
   let scopeContext
   const owner = ctx.plugin({ name: 'integration-scope-owner', inject: ['tools'], apply(context) { scopeContext = context } })
   while (owner.inertia) await owner.inertia
@@ -55,6 +56,12 @@ test('installed Cordis and DSH tools release scoped masks on directory change an
   agent.session.cwd = '/integration/a'
   ctx.emit('session/event', agent.session, { type: 'working-directory/change', data: { cwd: '/integration/a' } })
   assert.equal(ctx.tools.get('list_subagent_models', agent), undefined, 'mask restored after returning')
+  removeTool()
+  await Promise.resolve()
+  ctx.tools.register(definition)
+  await Promise.resolve()
+  assert.equal(ctx.tools.get('list_subagent_models', agent), undefined, 're-registered tool is masked')
+  assert.equal(ctx.tools.get('list_subagent_models', second), undefined, 're-registered tool is masked for both agents')
   await fiber.dispose()
   assert.ok(ctx.tools.get('list_subagent_models', agent), 'unloading plugin restores tool')
   assert.ok(ctx.tools.get('list_subagent_models', second), 'unloading restores second agent')

@@ -49,8 +49,10 @@ test('recommendations require three distinct sessions with offered but unused to
   const records = [1, 2, 3].map(i => session(String(i), [header(0, [candidate])]))
   const { ctx, agent } = fixture(records)
   assert.deepEqual((await recommendations(ctx, agent)).candidates, [candidate])
-  records.push(session('4', [call(0, candidate)]))
-  assert.deepEqual((await recommendations(ctx, agent)).candidates, [])
+  for (const type of ['tool/call', 'tool/ptc-dispatch-start', 'tool/ptc-dispatch']) {
+    records[3] = session('4', [{ seq: 0, type, data: { name: candidate } }])
+    assert.deepEqual((await recommendations(ctx, agent)).candidates, [])
+  }
 })
 
 test('explicit application is project scoped and restore releases restriction', async () => {

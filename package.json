@@ -1,6 +1,6 @@
 {
   "name": "@lphehe/dsh-token-economizer",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Evidence-based tool definition savings for DeepSeek Harness",
   "type": "module",
   "license": "MIT",
